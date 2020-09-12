@@ -10,7 +10,7 @@ void sjf(vector<process *> *processes)
 
     vector<bool> is_completed(processes->size(), false);
 
-    int cpu_clock_time = 0;
+    int cpu_timer = 0;
     unsigned int completed = 0;
 
     while (completed != processes->size())
@@ -19,7 +19,7 @@ void sjf(vector<process *> *processes)
         int min = 99999999;
         for (unsigned int i = 0; i < processes->size(); i++)
         {
-            if (processes->at(i)->arrival_time <= cpu_clock_time && !is_completed[i])
+            if (processes->at(i)->arrival_time <= cpu_timer && !is_completed[i])
             {
                 if (processes->at(i)->burst_time < min)
                 {
@@ -39,7 +39,7 @@ void sjf(vector<process *> *processes)
 
         if (index != -1)
         {
-            startTime(processes->at(index), cpu_clock_time);
+            startTime(processes->at(index), cpu_timer);
             completionTime(processes->at(index));
             turnAround(processes->at(index));
             waitingTime(processes->at(index));
@@ -47,11 +47,11 @@ void sjf(vector<process *> *processes)
 
             is_completed[index] = true;
             completed++;
-            cpu_clock_time = processes->at(index)->completion_time;
+            cpu_timer = processes->at(index)->completion_time;
         }
         else
         {
-            cpu_clock_time++;
+            cpu_timer++;
         }
     }
 
@@ -74,5 +74,5 @@ void sjf(vector<process *> *processes)
     cout << "\nAvg turn around time = "
          << (float)total_tat / (float)processes->size();
     cout << "\nCPU clock time = "
-         << cpu_clock_time << endl;
+         << cpu_timer << endl;
 }
