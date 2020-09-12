@@ -61,7 +61,7 @@ void readFile(vector<process *> *processes)
 
     ofstream f;
     string line;
-    std::ifstream infile("processes2.txt");
+    std::ifstream infile("processes.txt");
     if (infile.is_open())
     {
 
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
             sjf(&processes);
             cout << "\n*********[RR]*********\n"
                  << endl;
-            rr(&processes, 2, 0);
+            rr(&processes, 2, 0.1);
             break;
         case INVALID:
             cout << help_menu << endl;

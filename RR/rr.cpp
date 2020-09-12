@@ -26,7 +26,7 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
     // float cs = 0.1;
     // sort(*processes, *(processes + processes->size()), compare1);
 
-    int index;
+    unsigned int index;
     vector<float> remaining_brust(processes->size(), 0);
 
     for (int i = 0; i < processes->size(); i++)
@@ -75,7 +75,7 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
             responseTime(processes->at(index));
         }
 
-        for (int i = 1; i < processes->size(); i++)
+        for (unsigned int i = 1; i < processes->size(); i++)
         {
             if (remaining_brust[i] > 0 && processes->at(i)->arrival_time <= current_time && is_completed[i] == false)
             {
@@ -88,7 +88,7 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
 
         if (q.empty())
         {
-            for (int i = 1; i < processes->size(); i++)
+            for (unsigned int i = 1; i < processes->size(); i++)
             {
                 if (remaining_brust[i] > 0)
                 {
@@ -107,7 +107,7 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
 
     int total_wt = 0, total_tat = 0;
 
-    for (int i = 0; i < processes->size(); i++)
+    for (unsigned int i = 0; i < processes->size(); i++)
     {
         total_wt = total_wt + processes->at(i)->waiting_time;
         total_tat = total_tat + processes->at(i)->turnaround_time;

@@ -28,8 +28,8 @@ void fcfs(vector<process *> *processes)
     p_arr.push_back(temp);
 
     int clock_time = processes->at(0)->burst_time;
-    int i = 1;
-    int counter = i;
+    unsigned int i = 1;
+    unsigned int counter = i;
 
     for (i = 1; i < clock_time; i++)
     {
@@ -72,7 +72,7 @@ void fcfs(vector<process *> *processes)
 
     int total_wt = 0, total_tat = 0;
 
-    for (int i = 0; i < processes->size(); i++)
+    for (i = 0; i < processes->size(); i++)
     {
         total_wt = total_wt + processes->at(i)->waiting_time;
         total_tat = total_tat + processes->at(i)->turnaround_time;

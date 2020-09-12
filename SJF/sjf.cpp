@@ -10,13 +10,14 @@ void sjf(vector<process *> *processes)
 
     vector<bool> is_completed(processes->size(), false);
 
-    int cpu_clock_time = 0, completed = 0;
+    int cpu_clock_time = 0;
+    unsigned int completed = 0;
 
     while (completed != processes->size())
     {
         int index = -1;
         int min = 99999999;
-        for (int i = 0; i < processes->size(); i++)
+        for (unsigned int i = 0; i < processes->size(); i++)
         {
             if (processes->at(i)->arrival_time <= cpu_clock_time && !is_completed[i])
             {
@@ -61,7 +62,7 @@ void sjf(vector<process *> *processes)
 
     int total_wt = 0, total_tat = 0;
 
-    for (int i = 0; i < processes->size(); i++)
+    for (unsigned int i = 0; i < processes->size(); i++)
     {
         total_wt = total_wt + processes->at(i)->waiting_time;
         total_tat = total_tat + processes->at(i)->turnaround_time;
