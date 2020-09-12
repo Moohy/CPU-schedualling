@@ -27,9 +27,7 @@ void fcfs(vector<process *> *processes)
 
     p_arr.push_back(temp);
 
-    int clock_time = processes->at(0)->burst_time;
-    unsigned int i = 1;
-    unsigned int counter = i;
+    unsigned int clock_time = processes->at(0)->burst_time, i = 1, counter = i;
 
     for (i = 1; i < clock_time; i++)
     {

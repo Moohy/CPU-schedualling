@@ -29,7 +29,7 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
     unsigned int index;
     vector<float> remaining_brust(processes->size(), 0);
 
-    for (int i = 0; i < processes->size(); i++)
+    for (unsigned int i = 0; i < processes->size(); i++)
         remaining_brust[i] = processes->at(i)->burst_time;
 
     // cout << setprecision(2) << fixed;

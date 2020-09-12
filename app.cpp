@@ -3,6 +3,7 @@
 #include "./RR/rr.h"
 #include <iostream>
 #include <string>
+#include <string.h>
 #include <fstream>
 #include <sstream>
 using namespace std;
@@ -131,7 +132,7 @@ int main(int argc, char *argv[])
         cout << help_menu << endl;
     }
 
-    for (int i = 0; i < processes.size(); i++)
+    for (unsigned int i = 0; i < processes.size(); i++)
         free(processes[i]);
 
     return 0;
