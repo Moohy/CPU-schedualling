@@ -1,31 +1,40 @@
-#include "sjf.h"
+#include "SJF.h"
 
 void startTime(process *p, int clock_time)
 {
+    // add start time to process
     p->start_time = clock_time;
 }
 
 void sjf(vector<process *> *processes)
 {
-
+    // this is for checking the completness of processes
     vector<bool> is_completed(processes->size(), false);
 
+    // timer for a process
     int cpu_timer = 0;
+    // completed processes counter
     unsigned int completed = 0;
 
     while (completed != processes->size())
     {
+        // this is to calculate min and max
         int index = -1;
         int min = 99999999;
+
         for (unsigned int i = 0; i < processes->size(); i++)
         {
+            // check for processes arrived now or earlier than the timer
             if (processes->at(i)->arrival_time <= cpu_timer && !is_completed[i])
             {
+                // look for the shortest arrived process and save its index
                 if (processes->at(i)->burst_time < min)
                 {
                     min = processes->at(i)->burst_time;
                     index = i;
                 }
+                // if two short processes have the same burst time
+                // checck for the earliest arrived job between the two and save its index
                 if (processes->at(i)->burst_time == min)
                 {
                     if (processes->at(i)->arrival_time < processes->at(index)->arrival_time)
@@ -37,6 +46,8 @@ void sjf(vector<process *> *processes)
             }
         }
 
+        // if there exists a process do the claculation
+        // if not increase the timer by 1
         if (index != -1)
         {
             startTime(processes->at(index), cpu_timer);
@@ -55,24 +66,17 @@ void sjf(vector<process *> *processes)
         }
     }
 
+    /*
+        printing all neccessery information
+    */
     cout << "PID "
          << " Waiting time "
          << " Turn around time"
          << endl;
 
-    int total_wt = 0, total_tat = 0;
-
     for (unsigned int i = 0; i < processes->size(); i++)
-    {
-        total_wt = total_wt + processes->at(i)->waiting_time;
-        total_tat = total_tat + processes->at(i)->turnaround_time;
         cout << " " << processes->at(i)->pid << "\t" << processes->at(i)->waiting_time << "\t\t" << processes->at(i)->turnaround_time << endl;
-    }
 
-    cout << "Avg waiting time = "
-         << (float)total_wt / (float)processes->size();
-    cout << "\nAvg turn around time = "
-         << (float)total_tat / (float)processes->size();
     cout << "\nCPU clock time = "
          << cpu_timer << endl;
 }

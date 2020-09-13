@@ -1,6 +1,6 @@
-#include "./FCFS/fcfs.h"
-#include "./SJF/sjf.h"
-#include "./RR/rr.h"
+#include "./FCFS.h"
+#include "./SJF.h"
+#include "./RR.h"
 #include <iostream>
 #include <string>
 #include <string.h>
@@ -62,20 +62,27 @@ void readFile(vector<process *> *processes)
 
     ofstream f;
     string line;
+    // given file in canvas
     std::ifstream infile("processes.txt");
+
     if (infile.is_open())
     {
-
+        // loop through the file and get every line
         while (getline(infile, line))
         {
             std::istringstream iss(line);
             int pid, burst_time, arrival_time;
+            // pushing the numbers to the above vars
+            // as the arrangment explaind in the assignment specs
             if (!(iss >> pid >> burst_time >> arrival_time))
             {
                 break;
             }
+            // allocate new process
             process *p = (process *)malloc(sizeof(process));
             p->pid = pid, p->burst_time = burst_time, p->arrival_time = arrival_time;
+
+            // push process to the processes vector
             processes->push_back(p);
         }
     }
@@ -89,7 +96,13 @@ int main(int argc, char *argv[])
 
     readFile(&processes);
 
+    int time_quantum = 2;
+    float context_switch = 0.1;
+
+    // help menu
     string help_menu = "Choose one of the following algorithms as an argument:\n\t-all\t\tall algorithms\n\t-fcfs\t\tFirst-Come-First-Serve\n\t-sjf\t\tShortest-Job-First\n\t-rr\t\tRound-Robin";
+
+    // check if argument are given then enter the switch statement
     if (argc > 1)
     {
         switch (op_return(argv[1]))
@@ -107,7 +120,7 @@ int main(int argc, char *argv[])
         case RR:
             cout << "*********[RR]*********\n"
                  << endl;
-            rr(&processes, 2, 0.1);
+            rr(&processes, time_quantum, context_switch);
             break;
         case ALL:
             cout << "\n*********[FCFS]*********\n"
@@ -118,7 +131,7 @@ int main(int argc, char *argv[])
             sjf(&processes);
             cout << "\n*********[RR]*********\n"
                  << endl;
-            rr(&processes, 2, 0.1);
+            rr(&processes, time_quantum, context_switch);
             break;
         case INVALID:
             cout << help_menu << endl;
@@ -132,6 +145,7 @@ int main(int argc, char *argv[])
         cout << help_menu << endl;
     }
 
+    // free allocated memory for processes
     for (unsigned int i = 0; i < processes.size(); i++)
         free(processes[i]);
 

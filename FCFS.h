@@ -1,5 +1,5 @@
 
-#include "../process.h"
+#include "./process.h"
 
 #ifndef FCFS_ALG
 #define FCFS_ALG

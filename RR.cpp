@@ -1,4 +1,4 @@
-#include "rr.h"
+#include "RR.h"
 
 bool compare1(process *p1, process *p2)
 {
@@ -22,24 +22,31 @@ void completionTime(process *p, float current_time)
 
 void rr(vector<process *> *processes, int time_quantum, float context_switch)
 {
-
-    // float cs = 0.1;
-    // sort(*processes, *(processes + processes->size()), compare1);
-
+    // index to trace processes
     unsigned int index;
-    vector<float> remaining_brust(processes->size(), 0);
 
+    // tracing rarmaining burst time for a process
+    vector<float> remaining_burst(processes->size(), 0);
+
+    // filling the arrray with full burst time corresponding to processes in processes vector
     for (unsigned int i = 0; i < processes->size(); i++)
-        remaining_brust[i] = processes->at(i)->burst_time;
+        remaining_burst[i] = processes->at(i)->burst_time;
 
-    // cout << setprecision(2) << fixed;
-
+    // init queue
     queue<int> q;
-    float current_time = 0;
+    // push first start time
     q.push(0);
+
+    // this is to be used for indecating the current time/start time for a process when it moves from ready to running
+    float current_time = 0;
+
+    // this is for checking the completness of processes
     vector<bool> is_completed(processes->size(), false);
     is_completed[0] = true;
+
+    // counting the cpu time for processes that is processed plus the overhead time (context switch)
     float timer = 0;
+
     while (!q.empty())
     {
         // poping front of queue and use it as index
@@ -47,17 +54,17 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
         q.pop();
 
         // calculate start time if current process is the queue front
-        if (remaining_brust[index] == processes->at(index)->burst_time)
+        if (remaining_burst[index] == processes->at(index)->burst_time)
         {
             startTimeCalculation(processes->at(index), current_time);
             current_time = processes->at(index)->start_time;
         }
 
         // doing the process if still isn't reached 0 burst time
-        if (remaining_brust[index] - time_quantum > 0)
+        if (remaining_burst[index] - time_quantum > 0)
         {
             // substracting quantum time from burst time
-            remaining_brust[index] -= time_quantum;
+            remaining_burst[index] -= time_quantum;
 
             // add quontum time and context switch over load to timer
             timer += time_quantum + context_switch;
@@ -65,10 +72,13 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
         }
         else
         {
-            timer += remaining_brust[index] + context_switch;
-            current_time += remaining_brust[index];
-            remaining_brust[index] = 0;
+            // add remaining cpu burst time + overhead time
+            timer += remaining_burst[index] + context_switch;
 
+            current_time += remaining_burst[index];
+            remaining_burst[index] = 0;
+
+            // do calculation for process
             completionTime(processes->at(index), current_time);
             turnAround(processes->at(index));
             waitingTime(processes->at(index));
@@ -77,20 +87,24 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
 
         for (unsigned int i = 1; i < processes->size(); i++)
         {
-            if (remaining_brust[i] > 0 && processes->at(i)->arrival_time <= current_time && is_completed[i] == false)
+            // check completness
+            if (remaining_burst[i] > 0 && processes->at(i)->arrival_time <= current_time && is_completed[i] == false)
             {
                 q.push(i);
                 is_completed[i] = true;
             }
         }
-        if (remaining_brust[index] > 0)
+
+        // if not finished
+        if (remaining_burst[index] > 0)
             q.push(index);
 
+        // if queue is empty but there is an unfinished process
         if (q.empty())
         {
             for (unsigned int i = 1; i < processes->size(); i++)
             {
-                if (remaining_brust[i] > 0)
+                if (remaining_burst[i] > 0)
                 {
                     q.push(i);
                     is_completed[i] = true;
@@ -100,24 +114,17 @@ void rr(vector<process *> *processes, int time_quantum, float context_switch)
         }
     }
 
+    /*
+        printing all neccessery information
+    */
     cout << "PID "
          << " Waiting time "
          << " Turn around time"
          << endl;
 
-    int total_wt = 0, total_tat = 0;
-
     for (unsigned int i = 0; i < processes->size(); i++)
-    {
-        total_wt = total_wt + processes->at(i)->waiting_time;
-        total_tat = total_tat + processes->at(i)->turnaround_time;
         cout << " " << processes->at(i)->pid << "\t" << processes->at(i)->waiting_time << "\t\t" << processes->at(i)->turnaround_time << endl;
-    }
 
-    cout << "Avg waiting time = "
-         << (float)total_wt / (float)processes->size();
-    cout << "\nAvg turn around time = "
-         << (float)total_tat / (float)processes->size();
     cout << "\nCPU clock time = "
          << timer << endl;
 }

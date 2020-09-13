@@ -1,6 +1,6 @@
 
 
-#include "../process.h"
+#include "./process.h"
 
 #ifndef SJF_ALG
 #define SJF_ALG

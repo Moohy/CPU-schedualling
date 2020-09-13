@@ -1,4 +1,4 @@
-#include "fcfs.h"
+#include "FCFS.h"
 
 void startTime(process *p, process *prev_p)
 {
@@ -37,6 +37,7 @@ void fcfs(vector<process *> *processes)
             p.push(processes->at(counter));
             clock_time += processes->at(counter)->burst_time;
             ++counter;
+            // push other process arive on same time
             while (counter < processes->size() - 1 && processes->at(counter + 1)->arrival_time == i)
             {
                 p.push(processes->at(counter));
@@ -63,24 +64,17 @@ void fcfs(vector<process *> *processes)
         }
     }
 
+    /*
+        printing all neccessery information
+    */
     cout << "PID "
          << " Waiting time "
          << " Turn around time"
          << endl;
 
-    int total_wt = 0, total_tat = 0;
-
     for (i = 0; i < processes->size(); i++)
-    {
-        total_wt = total_wt + processes->at(i)->waiting_time;
-        total_tat = total_tat + processes->at(i)->turnaround_time;
         cout << " " << processes->at(i)->pid << "\t" << processes->at(i)->waiting_time << "\t\t" << processes->at(i)->turnaround_time << endl;
-    }
 
-    cout << "Avg waiting time = "
-         << (float)total_wt / (float)processes->size();
-    cout << "\nAvg turn around time = "
-         << (float)total_tat / (float)processes->size();
     cout << "\nCPU clock time = "
          << clock_time << endl;
 }
